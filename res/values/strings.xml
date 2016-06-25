@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Mum To Son</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="music_prac">Music Practice</string>
+    <string name="homework_rev">Homework / Revision</string>
+    <string name="get_com">Get a Command</string>
+    <string name="cup_coffee">Cup of Coffee</string>
+    <string name="pick_com">Pick a Command</string>
+    <string name="rcv_com">Command Received</string>
+
+</resources>
