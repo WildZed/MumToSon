@@ -58,6 +58,9 @@ public final class R {
         public static final int hello_world=0x7f060002;
         public static final int homework_rev=0x7f060004;
         public static final int music_prac=0x7f060003;
+        public static final int nsd_service_connected=0x7f060009;
+        public static final int nsd_service_disconnected=0x7f06000a;
+        public static final int nsd_service_permission_desc=0x7f06000b;
         public static final int pick_com=0x7f060007;
         public static final int rcv_com=0x7f060008;
     }

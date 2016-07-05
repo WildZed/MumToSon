@@ -20,8 +20,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.util.Log;
 import matt.dad.mumtoson.R;
+import zed.tools.lib.nsdconnect.NsdService;
 // import matt.dad.mumtoson.NetworkTask;
-import zed.tools.lib.nsdconnect.NsdConnection;
+// import zed.tools.lib.nsdconnect.NsdConnection;
+import zed.tools.lib.nsdconnect.NsdServiceConnection;
 
 
 @SuppressLint( "HandlerLeak" )
@@ -29,211 +31,39 @@ import zed.tools.lib.nsdconnect.NsdConnection;
 public class OrderCaller extends Activity
 {
     // Constants:
-    private static final String ORDER_CALLER = "OrderCaller";
+    private static final String  ORDER_CALLER = OrderCaller.class.getSimpleName();
     @SuppressWarnings( "unused" )
-    private static final String ERROR        = "Error";
-    private static final String WARNING      = "Warning";
+    private static final String  ERROR        = "Error";
+    private static final String  WARNING      = "Warning";
     // @SuppressWarnings( "unused" )
-    private static final String INFO         = "Info";
-    
-    private Context         m_context;
-    private NsdConnection   m_nsdConnection;
-    private LinearLayout    m_mainLayout;
+    private static final String  INFO         = "Info";
+
+    private Context              m_context;
+    private NsdServiceConnection m_nsdConnection;
+    private LinearLayout         m_mainLayout;
     // private LinearLayout m_commandButtonLayout;
     // private LinearLayout m_receiveButtonLayout;
     // private InputMethodManager m_inputMethodManager;
     // private Resources m_resources;
-    private EditText        m_logTxt;
-    private Button          m_musicPracticeSendBtn;
-    private Button          m_musicPracticeRcvBtn;
-    private Button          m_coffeeSendBtn;
-    private Button          m_coffeeRcvBtn;
-    private Button          m_homeworkSendBtn;
-    private Button          m_homeworkRcvBtn;
-    private MediaPlayer     m_homeworkSound;
-    private MediaPlayer     m_coffeeSound;
-    private MediaPlayer     m_musicPracticeSound;
-
-
-    
-    public void clickMusicPractice( View view )
-    {
-        m_musicPracticeRcvBtn.setEnabled( true );
-        sendMessageToNSDConnection( "m+" );
-    }
-
-
-    public void clickCoffee( View view )
-    {
-        m_coffeeRcvBtn.setEnabled( true );
-        sendMessageToNSDConnection( "c+" );
-    }
-
-
-    public void clickHomework( View view )
-    {
-        m_homeworkRcvBtn.setEnabled( true );
-        sendMessageToNSDConnection( "h+" );
-    }
-
-    
-    public void clickMusicPracticeRcv( View view )
-    {
-        m_musicPracticeRcvBtn.setEnabled( false );
-        sendMessageToNSDConnection( "m-" );
-    }
-
-
-    public void clickCoffeeRcv( View view )
-    {
-        m_coffeeRcvBtn.setEnabled( false );
-        sendMessageToNSDConnection( "c-" );
-    }
-
-
-    public void clickHomeworkRcv( View view )
-    {
-        m_homeworkRcvBtn.setEnabled( false );
-        sendMessageToNSDConnection( "h-" );
-    }
-
-    
-    public void clickLogView( View view )
-    {
-        // connect();
-    }
-
-
-    private void sendMessageToNSDConnection( String msg )
-    {
-        logMessage( INFO, "Sending message '" + msg + "' to NSD connection..." );
-
-        if ( m_nsdConnection != null )
-        {
-            m_nsdConnection.sendMessage( msg );
-        }
-    }
-
-
-    private void setMumButtonsEnabled( boolean enabled )
-    {
-        logMessage( INFO, "Mum buttons set to " + enabled + "." );
-
-        m_musicPracticeSendBtn.setEnabled( enabled );
-        m_coffeeSendBtn.setEnabled( enabled );
-        m_homeworkSendBtn.setEnabled( enabled );
-    }
-
-
-    private void processMumCommand( String msg )
-    {
-        // We've received a message, let's see what it is.
-        // For some reason the msg is "them: <char>".
-        boolean enabled = ( msg.charAt( 1 ) == '+' );
-        
-        switch ( msg.charAt( 0 ) )
-        {
-            case 'm':
-                m_musicPracticeRcvBtn.setEnabled( enabled );
-                
-                if ( enabled )
-                {
-                    m_musicPracticeSound.start();
-                }
-                break;
-
-            case 'c':
-                m_coffeeRcvBtn.setEnabled( enabled );
-                
-                if ( enabled )
-                {
-                    m_coffeeSound.start();
-                }
-                break;
-
-            case 'h':
-                m_homeworkRcvBtn.setEnabled( enabled );
-                
-                if ( enabled )
-                {
-                    m_homeworkSound.start();
-                }
-                break;
-
-            default:
-                logMessage( WARNING, "Unhandled Mum command!" );
-                break;
-        }
-    }
-
-
-    private void logMessage( String label, String message )
-    {
-        String logMsg = label + ": " + message;
-
-        m_logTxt.append( logMsg );
-
-        if ( ! logMsg.endsWith( "\n" ) )
-        {
-            m_logTxt.append( "\n" );
-        }
-
-        Log.i( ORDER_CALLER, logMsg );
-    }
-
-    
-    private Handler createNsdUpdateHandler()
-    {
-        return new Handler()
-        {
-            @Override
-            public void handleMessage( Message nsdMsg )
-            {
-                Bundle data = nsdMsg.getData();
-                String msg = data.getString( "msg" );
-
-                if ( msg != null )
-                {
-                    if ( msg.startsWith( "me: " ) )
-                    {
-                        String meMsg = msg.substring( 4 );
-                        
-                        logMessage( INFO, "Sent message to remote: " + meMsg );
-                    }
-                    else if ( msg.startsWith( "them: " ) )
-                    {
-                        String themMsg = msg.substring( 6 );
-                        
-                        logMessage( INFO, "Received message from remote: " + themMsg );
-                        
-                        processMumCommand( themMsg );
-                    }
-                    else
-                    {
-                        logMessage( WARNING, "Unrecognised message: " + msg );
-                    }
-                }
-
-                String connected = data.getString( "connected" );
-
-                if ( connected != null )
-                {
-                    boolean enabled = ( connected == "1" );
-
-                    setMumButtonsEnabled( enabled );
-                }
-            }
-        };
-    }
+    private EditText             m_logTxt;
+    private Button               m_musicPracticeSendBtn;
+    private Button               m_musicPracticeRcvBtn;
+    private Button               m_coffeeSendBtn;
+    private Button               m_coffeeRcvBtn;
+    private Button               m_homeworkSendBtn;
+    private Button               m_homeworkRcvBtn;
+    private MediaPlayer          m_homeworkSound;
+    private MediaPlayer          m_coffeeSound;
+    private MediaPlayer          m_musicPracticeSound;
 
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
-    
+
         setContentView( R.layout.activity_order_caller );
-    
+
         // Look up some resources from the activity that we need to access.
         m_context = getApplicationContext();
         m_mainLayout = (LinearLayout) findViewById( R.id.mainLayout );
@@ -247,12 +77,13 @@ public class OrderCaller extends Activity
         m_homeworkSound = MediaPlayer.create( m_context, R.raw.homework );
         m_coffeeSound = MediaPlayer.create( m_context, R.raw.coffee );
         m_musicPracticeSound = MediaPlayer.create( m_context, R.raw.music_practice );
-    
+
         m_mainLayout.requestFocus();
         // loadPreferences();
-    
+
         // Create/start the network connectivity.
-        m_nsdConnection = new NsdConnection( this, ORDER_CALLER, createNsdUpdateHandler() );
+        m_nsdConnection = new NsdServiceConnection( false, this, ORDER_CALLER, createNsdUpdateHandler() );
+        m_nsdConnection.bindService();
     }
 
 
@@ -261,7 +92,8 @@ public class OrderCaller extends Activity
     {
         // Stop local service.
         // m_nsdConnection.stopService();
-        m_nsdConnection.tearDown();
+        // m_nsdConnection.tearDown();
+        m_nsdConnection.unbindService();
         m_nsdConnection = null;
         super.onDestroy();
         // setConnected( false );
@@ -273,8 +105,8 @@ public class OrderCaller extends Activity
     {
         super.onStart();
         // Start local service.
-        m_nsdConnection.startService();
-   }
+        // m_nsdConnection.startService();
+    }
 
 
     @Override
@@ -296,14 +128,16 @@ public class OrderCaller extends Activity
     protected void onResume()
     {
         super.onResume();
-        m_nsdConnection.onResume();
+        // m_nsdConnection.onResume();
+        // m_nsdConnection.resume();
     }
 
 
     @Override
     protected void onPause()
     {
-        m_nsdConnection.onPause();
+        // m_nsdConnection.onPause();
+        // m_nsdConnection.pause();
         super.onPause();
     }
 
@@ -343,8 +177,175 @@ public class OrderCaller extends Activity
     {
         // setConnected( false );
     }
-}
 
+
+    public void clickMusicPractice( View view )
+    {
+        m_musicPracticeRcvBtn.setEnabled( true );
+        sendMessageToNSDConnection( "m+" );
+    }
+
+
+    public void clickCoffee( View view )
+    {
+        m_coffeeRcvBtn.setEnabled( true );
+        sendMessageToNSDConnection( "c+" );
+    }
+
+
+    public void clickHomework( View view )
+    {
+        m_homeworkRcvBtn.setEnabled( true );
+        sendMessageToNSDConnection( "h+" );
+    }
+
+
+    public void clickMusicPracticeRcv( View view )
+    {
+        m_musicPracticeRcvBtn.setEnabled( false );
+        sendMessageToNSDConnection( "m-" );
+    }
+
+
+    public void clickCoffeeRcv( View view )
+    {
+        m_coffeeRcvBtn.setEnabled( false );
+        sendMessageToNSDConnection( "c-" );
+    }
+
+
+    public void clickHomeworkRcv( View view )
+    {
+        m_homeworkRcvBtn.setEnabled( false );
+        sendMessageToNSDConnection( "h-" );
+    }
+
+
+    public void clickLogView( View view )
+    {
+        // connect();
+    }
+
+
+    private void sendMessageToNSDConnection( String text )
+    {
+        logMessage( INFO, "Sending message '" + text + "' to NSD connection..." );
+
+        if ( m_nsdConnection != null )
+        {
+            Message msg = Message.obtain( null, NsdService.MSG_TEXT );
+            Bundle bundle = new Bundle();
+            
+            bundle.putString( "text", text );
+            msg.setData( bundle );
+            m_nsdConnection.sendMessage( msg );
+        }
+    }
+
+
+    private void setMumButtonsEnabled( boolean enabled )
+    {
+//        logMessage( INFO, "Mum buttons set to " + enabled + "." );
+
+        m_musicPracticeSendBtn.setEnabled( enabled );
+        m_coffeeSendBtn.setEnabled( enabled );
+        m_homeworkSendBtn.setEnabled( enabled );
+    }
+
+
+    private void processMumCommand( String msg )
+    {
+        // We've received a message, let's see what it is.
+        // For some reason the msg is "them: <char>".
+        boolean enabled = ( msg.charAt( 1 ) == '+' );
+
+        switch ( msg.charAt( 0 ) )
+        {
+            case 'm':
+                m_musicPracticeRcvBtn.setEnabled( enabled );
+
+                if ( enabled )
+                {
+                    m_musicPracticeSound.start();
+                }
+                break;
+
+            case 'c':
+                m_coffeeRcvBtn.setEnabled( enabled );
+
+                if ( enabled )
+                {
+                    m_coffeeSound.start();
+                }
+                break;
+
+            case 'h':
+                m_homeworkRcvBtn.setEnabled( enabled );
+
+                if ( enabled )
+                {
+                    m_homeworkSound.start();
+                }
+                break;
+
+            default:
+                logMessage( WARNING, "Unhandled Mum command!" );
+                break;
+        }
+    }
+
+
+    private void logMessage( String label, String message )
+    {
+        String logMsg = label + ": " + message;
+
+        m_logTxt.append( logMsg );
+
+        if ( !logMsg.endsWith( "\n" ) )
+        {
+            m_logTxt.append( "\n" );
+        }
+
+        Log.i( ORDER_CALLER, logMsg );
+    }
+
+
+    private Handler createNsdUpdateHandler()
+    {
+        // This Handler will process messages on the main thread.
+        return new Handler()
+        {
+            @Override
+            public void handleMessage( Message msg )
+            {
+                switch ( msg.what )
+                {
+                    case NsdService.MSG_TEXT:
+                        String text = msg.getData().getString( "text" );
+
+                        logMessage( INFO, "Received message from remote: " + text );
+
+                        processMumCommand( text );
+                        break;
+
+                    case NsdService.MSG_INFO:
+                        String info = msg.getData().getString( "info" );
+
+                        logMessage( INFO, "Sent message to remote: " + info );
+                        break;
+
+                    case NsdService.MSG_CONNECTED:
+                        setMumButtonsEnabled( (Boolean) msg.obj );
+                        break;
+
+                    default:
+                        logMessage( WARNING, "Unserviced message id: " + msg.what );
+                        break;
+                }
+            }
+        };
+    }
+}
 
 // m_commandButtonLayout = (LinearLayout) findViewById( R.id.commandButtons );
 // m_receiveButtonLayout = (LinearLayout) findViewById( R.id.receiveButtons );
@@ -387,7 +388,6 @@ public class OrderCaller extends Activity
 // {
 // m_inputMethodManager.hideSoftInputFromWindow( m_mainLayout.getWindowToken(), 0 );
 // }
-
 
 // private View.OnClickListener m_musicPractiseBtnListener = new View.OnClickListener()
 // {
