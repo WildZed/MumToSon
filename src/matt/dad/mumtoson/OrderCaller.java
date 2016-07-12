@@ -334,8 +334,12 @@ public class OrderCaller extends Activity
                         logMessage( INFO, "Sent message to remote: " + info );
                         break;
 
-                    case NsdService.MSG_CONNECTED:
-                        setMumButtonsEnabled( (Boolean) msg.obj );
+                    case NsdService.MSG_CONNECTED:                        
+                        setMumButtonsEnabled( true );
+                        break;
+
+                    case NsdService.MSG_UNCONNECTED:                        
+                        setMumButtonsEnabled( false );
                         break;
 
                     default:

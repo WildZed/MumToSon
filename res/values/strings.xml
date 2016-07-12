@@ -10,8 +10,6 @@
     <string name="cup_coffee">Cup of Coffee</string>
     <string name="pick_com">Pick a Command</string>
     <string name="rcv_com">Command Received</string>
-    <string name="nsd_service_connected">NSD service connected</string>
-    <string name="nsd_service_disconnected">NSD service disconnected</string>
     <string name="nsd_service_permission_desc">Access to NSD Connect Service</string>
     
 </resources>

@@ -13,7 +13,7 @@
     <uses-sdk
         android:minSdkVersion="3"
         android:targetSdkVersion="18" />
-
+    
     <uses-permission
         android:name="android.permission.ACCESS_WIFI_STATE"
         android:required="true" />
@@ -29,30 +29,36 @@
         android:required="true" />
     
     <application
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/nsd_default"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
         <service
             android:name="zed.tools.lib.nsdconnect.NsdService"
             android:enabled="true"
-            android:isolatedProcess="true"
             android:process=":remote"
             android:permission="zed.tools.lib.nsdconnect.NSD_SERVICE_PERMISSION"
         >
             
-            <!-- android:debuggable="true" -->
-            <!-- android:label="NsdService" -->
+            <!--
+            android:debuggable="true"
+            android:label="NsdService"
+            android:isolatedProcess="true"
+            -->
             <intent-filter>
                 <action android:name="zed.tools.lib.nsdconnect.NsdService" />
             </intent-filter>
         </service>
-
+        
         <activity
             android:name="matt.dad.mumtoson.OrderCaller"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+			android:launchMode="singleTask"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode|fontScale|smallestScreenSize|layoutDirection"
-			android:documentLaunchMode="intoExisting"
+        >
+            <!--
+           		android:documentLaunchMode="intoExisting"
+            -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

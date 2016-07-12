@@ -3,7 +3,7 @@
 	<name>MumToSon</name>
 	<comment></comment>
 	<projects>
-		<project>zed.tools.lib</project>
+		<project>NsdConnect</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
