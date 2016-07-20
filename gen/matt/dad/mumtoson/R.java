@@ -22,8 +22,11 @@ public final class R {
         public static final int medium_text=0x7f070002;
     }
     public static final class drawable {
-        public static final int nsd_default=0x7f020000;
-        public static final int nsd_service=0x7f020001;
+        public static final int ic_nsd_debug=0x7f020000;
+        public static final int ic_nsd_refresh=0x7f020001;
+        public static final int ic_nsd_service=0x7f020002;
+        public static final int ic_nsd_stop=0x7f020003;
+        public static final int nsd_default=0x7f020004;
     }
     public static final class id {
         public static final int action_settings=0x7f09000c;

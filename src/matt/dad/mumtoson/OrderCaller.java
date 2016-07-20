@@ -39,7 +39,7 @@ public class OrderCaller extends Activity
     private static final String  INFO         = "Info";
 
     private Context              m_context;
-    private NsdServiceConnection m_nsdConnection;
+    private NsdServiceConnection m_nsdServiceConnection;
     private LinearLayout         m_mainLayout;
     // private LinearLayout m_commandButtonLayout;
     // private LinearLayout m_receiveButtonLayout;
@@ -82,8 +82,8 @@ public class OrderCaller extends Activity
         // loadPreferences();
 
         // Create/start the network connectivity.
-        m_nsdConnection = new NsdServiceConnection( false, this, ORDER_CALLER, createNsdUpdateHandler() );
-        m_nsdConnection.bindService();
+        m_nsdServiceConnection = new NsdServiceConnection( false, this, ORDER_CALLER, createNsdUpdateHandler() );
+        m_nsdServiceConnection.bindService();
     }
 
 
@@ -91,10 +91,10 @@ public class OrderCaller extends Activity
     protected void onDestroy()
     {
         // Stop local service.
-        // m_nsdConnection.stopService();
-        // m_nsdConnection.tearDown();
-        m_nsdConnection.unbindService();
-        m_nsdConnection = null;
+        // m_nsdServiceConnection.stopService();
+        // m_nsdServiceConnection.tearDown();
+        m_nsdServiceConnection.unbindService();
+        m_nsdServiceConnection = null;
         super.onDestroy();
         // setConnected( false );
     }
@@ -105,7 +105,8 @@ public class OrderCaller extends Activity
     {
         super.onStart();
         // Start local service.
-        // m_nsdConnection.startService();
+        // m_nsdServiceConnection.startService();
+        m_nsdServiceConnection.refresh();
     }
 
 
@@ -128,16 +129,15 @@ public class OrderCaller extends Activity
     protected void onResume()
     {
         super.onResume();
-        // m_nsdConnection.onResume();
-        // m_nsdConnection.resume();
+        m_nsdServiceConnection.refresh();
     }
 
 
     @Override
     protected void onPause()
     {
-        // m_nsdConnection.onPause();
-        // m_nsdConnection.pause();
+        // m_nsdServiceConnection.onPause();
+        // m_nsdServiceConnection.pause();
         super.onPause();
     }
 
@@ -231,14 +231,14 @@ public class OrderCaller extends Activity
     {
         logMessage( INFO, "Sending message '" + text + "' to NSD connection..." );
 
-        if ( m_nsdConnection != null )
+        if ( m_nsdServiceConnection != null )
         {
             Message msg = Message.obtain( null, NsdService.MSG_TEXT );
             Bundle bundle = new Bundle();
             
             bundle.putString( "text", text );
             msg.setData( bundle );
-            m_nsdConnection.sendMessage( msg );
+            m_nsdServiceConnection.sendMessage( msg );
         }
     }
 
